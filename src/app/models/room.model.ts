@@ -17,6 +17,7 @@ export interface Room {
 }
 
 export interface RoomQuestion {
+    category: string;
     question: string;
     correct_answer: string;
     answers: string[];

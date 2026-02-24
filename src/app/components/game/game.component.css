@@ -84,10 +84,12 @@
 
 /* Game Layout */
 .game-layout {
-    display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 /* Main Area */
@@ -103,6 +105,15 @@
     border-radius: 16px;
     padding: 2rem;
     animation: fadeInDown 0.4s ease-out;
+}
+
+.question-category {
+    font-size: 0.9rem;
+    color: var(--accent-red, #e63946);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 0.25rem;
 }
 
 .question-text {

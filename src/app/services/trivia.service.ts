@@ -59,6 +59,7 @@ export class TriviaService {
             this.shuffleAnswers(allAnswers);
 
             return {
+                category: this.decodeHtml(q.category),
                 question: this.decodeHtml(q.question),
                 correct_answer: this.decodeHtml(q.correct_answer),
                 answers: allAnswers

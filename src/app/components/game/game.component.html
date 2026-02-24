@@ -33,6 +33,9 @@
                 <div class="question-counter">
                     Question {{ currentQuestionNum() }} / {{ totalQuestions() }}
                 </div>
+                <div class="question-category">
+                    {{ q.category }}
+                </div>
             </div>
 
             <div class="question-card">
@@ -78,33 +81,5 @@
             }
         </div>
 
-        <!-- Scoreboard Sidebar -->
-        <div class="scoreboard">
-            <h3 class="scoreboard-title">🏆 Scoreboard</h3>
-            <div class="scores-list">
-                @for (player of players(); track player.id; let i = $index) {
-                <div class="score-row" [class.is-you]="player.id === currentPlayerId()">
-                    <span class="rank">{{ i + 1 }}</span>
-                    <div class="score-player-info">
-                        <span class="score-name">
-                            {{ player.nickname }}
-                            @if (player.id === currentPlayerId()) {
-                            <span class="you-tag">(You)</span>
-                            }
-                        </span>
-                        @if (showingResults() && isFastest(player.id)) {
-                        <span class="fast-icon">⚡</span>
-                        }
-                    </div>
-                    <span class="score-value">{{ player.score }}</span>
-                    @if (showingResults() && player.isCorrect !== null) {
-                    <span class="answer-indicator" [class.correct]="player.isCorrect" [class.wrong]="!player.isCorrect">
-                        {{ player.isCorrect ? '✓' : '✗' }}
-                    </span>
-                    }
-                </div>
-                }
-            </div>
-        </div>
     </div>
 </div>

@@ -75,6 +75,7 @@ export class GameService {
         }
 
         const roomQuestions: RoomQuestion[] = questions.map(q => ({
+            category: q.category,
             question: q.question,
             correct_answer: q.correct_answer,
             answers: q.answers
