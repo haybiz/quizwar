@@ -60,7 +60,7 @@
 
             @if (showingResults()) {
             <div class="feedback results-shown">
-                @if (currentPlayerData().isCorrect) {
+                @if (currentPlayerData().isCorrect === true) {
                 ✅ Correct!
                 @if (isFastest(currentPlayerId())) {
                 <span class="fastest-badge">⚡ Fastest!</span>

@@ -55,7 +55,7 @@ export class GameComponent implements OnInit {
         const p = this.gameService.players();
         let fastest: { id: string; nickname: string; answeredAt: number } | null = null;
         for (const [id, player] of Object.entries(p)) {
-            if (player.isCorrect && player.answeredAt) {
+            if (player.isCorrect === true && player.answeredAt) {
                 if (!fastest || player.answeredAt < fastest.answeredAt) {
                     fastest = { id, nickname: player.nickname, answeredAt: player.answeredAt };
                 }
