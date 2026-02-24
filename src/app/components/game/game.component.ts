@@ -66,7 +66,7 @@ export class GameComponent implements OnInit {
         const p = this.gameService.players();
         const entries = Object.values(p);
         if (entries.length === 0) return false;
-        return entries.every(player => player.selectedAnswer !== null);
+        return entries.every(player => player.selectedAnswer != null && player.selectedAnswer !== '');
     });
 
     ngOnInit(): void {
