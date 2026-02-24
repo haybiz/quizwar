@@ -55,10 +55,10 @@ export class LobbyComponent implements OnInit {
             }
         });
 
-        // Watch for status change to 'playing'
+        // Watch for status change
         const checkInterval = setInterval(() => {
             const room = this.room();
-            if (room && room.status === 'playing') {
+            if (room && (room.status === 'countdown' || room.status === 'playing')) {
                 clearInterval(checkInterval);
                 this.router.navigate(['/game', this.roomId()]);
             }

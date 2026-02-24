@@ -22,8 +22,12 @@ export class TriviaService {
         const perCategory = Math.ceil(amount / categoryIds.length);
         const allQuestions: Question[] = [];
 
-        for (const catId of categoryIds) {
-            const batch = await this.fetchFromApi(perCategory, catId);
+        for (let i = 0; i < categoryIds.length; i++) {
+            if (i > 0) {
+                // OpenTDB limits to 1 request per 5 seconds
+                await new Promise(resolve => setTimeout(resolve, 5200));
+            }
+            const batch = await this.fetchFromApi(perCategory, categoryIds[i]);
             allQuestions.push(...batch);
         }
 

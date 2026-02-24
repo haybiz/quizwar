@@ -21,6 +21,7 @@ export class GameComponent implements OnInit {
     selectedAnswer = signal<string | null>(null);
     hasAnswered = signal(false);
     timeRemaining = signal(15);
+    countdownRemaining = signal(0);
     showingResults = signal(false);
     private timerInterval: any = null;
     private autoAdvanceTimeout: any = null;
@@ -66,7 +67,7 @@ export class GameComponent implements OnInit {
         const p = this.gameService.players();
         const entries = Object.values(p);
         if (entries.length === 0) return false;
-        return entries.every(player => typeof player.selectedAnswer === 'string' && player.selectedAnswer.length > 0);
+        return entries.every(player => typeof player.selectedAnswer === 'string' && player.selectedAnswer !== 'NONE');
     });
 
     ngOnInit(): void {
@@ -98,9 +99,18 @@ export class GameComponent implements OnInit {
                 this.resetForNewQuestion();
             }
 
-            // Sync answer state from Firebase (e.g. on reconnect)
+            // Handle countdown state
+            if (room.status === 'countdown') {
+                if (room.countdownEndAt) {
+                    const remaining = Math.max(0, Math.ceil((room.countdownEndAt - Date.now()) / 1000));
+                    this.countdownRemaining.set(remaining);
+                }
+                return;
+            }
+
+            // Sync answer state from Firebase
             const myData = this.currentPlayerData();
-            if (myData && myData.selectedAnswer && !this.hasAnswered()) {
+            if (myData && myData.selectedAnswer !== 'NONE' && !this.hasAnswered()) {
                 this.selectedAnswer.set(myData.selectedAnswer);
                 this.hasAnswered.set(true);
             }

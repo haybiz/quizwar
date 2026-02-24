@@ -34,8 +34,8 @@ export class RoomService {
             nickname,
             score: 0,
             answeredAt: 0,
-            selectedAnswer: '',
-            isCorrect: ''
+            selectedAnswer: 'NONE',
+            isCorrect: 'NONE'
         };
 
         await set(ref(this.db, `rooms/${roomId}`), {
@@ -71,8 +71,8 @@ export class RoomService {
             nickname,
             score: 0,
             answeredAt: 0,
-            selectedAnswer: '',
-            isCorrect: ''
+            selectedAnswer: 'NONE',
+            isCorrect: 'NONE'
         };
 
         await update(ref(this.db, `rooms/${roomId}/players`), {

@@ -86,17 +86,32 @@ export class GameService {
         for (const pid of Object.keys(players)) {
             playerUpdates[`rooms/${roomId}/players/${pid}/score`] = 0;
             playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = 0;
-            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = '';
-            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = '';
+            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = 'NONE';
+            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = 'NONE';
         }
 
         await update(ref(this.db), {
-            [`rooms/${roomId}/status`]: 'playing',
+            [`rooms/${roomId}/status`]: 'countdown',
+            [`rooms/${roomId}/countdownEndAt`]: Date.now() + 3500,
             [`rooms/${roomId}/questions`]: roomQuestions,
             [`rooms/${roomId}/currentQuestionIndex`]: 0,
-            [`rooms/${roomId}/questionStartedAt`]: Date.now(),
+            [`rooms/${roomId}/questionStartedAt`]: null,
             ...playerUpdates
         });
+
+        setTimeout(async () => {
+            import('firebase/database').then(({ get }) => {
+                get(ref(this.db, `rooms/${roomId}`)).then(snapshot => {
+                    const data = snapshot.val();
+                    if (data && data.status === 'countdown') {
+                        update(ref(this.db, `rooms/${roomId}`), {
+                            status: 'playing',
+                            questionStartedAt: Date.now()
+                        });
+                    }
+                });
+            });
+        }, 3500);
     }
 
     async submitAnswer(roomId: string, answer: string): Promise<void> {
@@ -147,8 +162,8 @@ export class GameService {
         const playerUpdates: { [key: string]: any } = {};
         for (const pid of Object.keys(players)) {
             playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = 0;
-            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = '';
-            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = '';
+            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = 'NONE';
+            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = 'NONE';
         }
 
         await update(ref(this.db), {
@@ -164,8 +179,8 @@ export class GameService {
         for (const pid of Object.keys(players)) {
             playerUpdates[`rooms/${roomId}/players/${pid}/score`] = 0;
             playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = 0;
-            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = '';
-            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = '';
+            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = 'NONE';
+            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = 'NONE';
         }
 
         await update(ref(this.db), {

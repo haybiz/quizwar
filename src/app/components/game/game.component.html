@@ -20,7 +20,21 @@
     <div class="game-layout">
         <!-- Main Game Area -->
         <div class="main-area">
-            @if (currentQuestion(); as q) {
+            @if (room()?.status === 'countdown') {
+            <!-- COUNTDOWN SCREEN -->
+            <div class="countdown-screen">
+                <h2 class="countdown-title">Get Ready!</h2>
+                <div class="countdown-number">{{ countdownRemaining() || 1 }}</div>
+                <p class="countdown-subtitle">Battle starting soon...</p>
+            </div>
+            } @else if (currentQuestion(); as q) {
+            <!-- GAMEPLAY SCREEN -->
+            <div class="header">
+                <div class="question-counter">
+                    Question {{ currentQuestionNum() }} / {{ totalQuestions() }}
+                </div>
+            </div>
+
             <div class="question-card">
                 <p class="question-text">{{ q.question }}</p>
             </div>
@@ -43,7 +57,7 @@
 
             @if (showingResults()) {
             <div class="feedback results-shown">
-                @if (currentPlayerData()?.isCorrect) {
+                @if (currentPlayerData().isCorrect) {
                 ✅ Correct!
                 @if (isFastest(currentPlayerId())) {
                 <span class="fastest-badge">⚡ Fastest!</span>

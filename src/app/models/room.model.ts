@@ -7,8 +7,9 @@ export interface Player {
 }
 
 export interface Room {
-    status: 'lobby' | 'playing' | 'results';
+    status: 'lobby' | 'countdown' | 'playing' | 'results';
     hostId: string;
+    countdownEndAt?: number;
     currentQuestionIndex: number;
     questionStartedAt: number | null;
     questions: RoomQuestion[];
