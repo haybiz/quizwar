@@ -3,7 +3,7 @@ services:
     name: quizwar
     env: static
     buildCommand: npm run build
-    staticPublishPath: dist/QuizWar/browser
+    staticPublishPath: dist/quizwar/browser
     routes:
       - type: rewrite
         source: /*
