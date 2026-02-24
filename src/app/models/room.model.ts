@@ -1,9 +1,9 @@
 export interface Player {
     nickname: string;
     score: number;
-    answeredAt: number | null;
-    selectedAnswer: string | null;
-    isCorrect: boolean | null;
+    answeredAt: number;
+    selectedAnswer: string;
+    isCorrect: boolean | string;
 }
 
 export interface Room {

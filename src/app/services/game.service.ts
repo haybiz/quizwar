@@ -85,9 +85,9 @@ export class GameService {
         const playerUpdates: { [key: string]: any } = {};
         for (const pid of Object.keys(players)) {
             playerUpdates[`rooms/${roomId}/players/${pid}/score`] = 0;
-            playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = null;
-            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = null;
-            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = null;
+            playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = 0;
+            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = '';
+            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = '';
         }
 
         await update(ref(this.db), {
@@ -146,9 +146,9 @@ export class GameService {
         const players = this.players();
         const playerUpdates: { [key: string]: any } = {};
         for (const pid of Object.keys(players)) {
-            playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = null;
-            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = null;
-            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = null;
+            playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = 0;
+            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = '';
+            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = '';
         }
 
         await update(ref(this.db), {
@@ -163,9 +163,9 @@ export class GameService {
         const playerUpdates: { [key: string]: any } = {};
         for (const pid of Object.keys(players)) {
             playerUpdates[`rooms/${roomId}/players/${pid}/score`] = 0;
-            playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = null;
-            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = null;
-            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = null;
+            playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = 0;
+            playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = '';
+            playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = '';
         }
 
         await update(ref(this.db), {
