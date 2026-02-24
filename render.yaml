@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: quizwar
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: dist/QuizWar/browser
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

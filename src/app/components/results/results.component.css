@@ -1,0 +1,346 @@
+.results-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.subtitle {
+    color: var(--text-secondary, #b0b8c8);
+    font-size: 1rem;
+    margin-top: 0.3rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Podium */
+.podium-section {
+    width: 100%;
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding-top: 2rem;
+}
+
+.podium-spot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    max-width: 180px;
+}
+
+.podium-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    position: relative;
+}
+
+.podium-player.champion {
+    animation: championBounce 1s ease-out;
+}
+
+.crown {
+    font-size: 2rem;
+    animation: crownFloat 2s ease-in-out infinite;
+    position: absolute;
+    top: -2.2rem;
+}
+
+.podium-medal {
+    font-size: 2rem;
+}
+
+.podium-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+    text-align: center;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.podium-score {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: var(--accent-gold, #ffd700);
+    font-weight: 700;
+}
+
+.podium-bar {
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 0.75rem;
+    transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: none;
+}
+
+.podium-bar.gold {
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+    border-color: rgba(255, 215, 0, 0.2);
+}
+
+.podium-rank {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Leaderboard */
+.leaderboard-section {
+    width: 100%;
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: var(--accent-gold, #ffd700);
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.leaderboard {
+    background: var(--card-bg, rgba(15, 20, 40, 0.85));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: all 0.3s ease;
+}
+
+.leaderboard-row:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-row.is-you {
+    background: rgba(78, 205, 196, 0.06);
+}
+
+.leaderboard-row.top-three {
+    background: rgba(255, 215, 0, 0.03);
+}
+
+.lb-rank {
+    width: 40px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-secondary, #b0b8c8);
+    text-align: center;
+}
+
+.lb-name {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.you-tag {
+    color: #4ecdc4;
+    font-size: 0.8rem;
+    margin-left: 0.35rem;
+}
+
+.lb-score {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent-gold, #ffd700);
+}
+
+/* Actions */
+.actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.btn {
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #e63946, #c1121f);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(230, 57, 70, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(230, 57, 70, 0.6);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-leave {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-secondary, #b0b8c8);
+}
+
+.btn-leave:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.waiting-msg {
+    text-align: center;
+    padding: 0.85rem;
+    color: var(--text-secondary, #b0b8c8);
+    font-size: 0.95rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes championBounce {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes crownFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 480px) {
+    .results-container {
+        padding: 1.25rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .podium {
+        gap: 0.4rem;
+    }
+
+    .podium-spot {
+        max-width: 130px;
+    }
+
+    .podium-name {
+        font-size: 0.85rem;
+        max-width: 100px;
+    }
+}

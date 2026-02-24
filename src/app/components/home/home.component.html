@@ -1,0 +1,76 @@
+<div class="home-container">
+  <div class="hero">
+    <div class="logo-wrapper">
+      <span class="logo-icon">⚔️</span>
+      <h1 class="logo-text">Quiz<span class="accent">War</span></h1>
+      <span class="logo-icon">⚔️</span>
+    </div>
+    <p class="tagline">Battle your friends in real-time trivia combat!</p>
+  </div>
+
+  <div class="card">
+    <div class="input-group">
+      <label for="nickname">Your Battle Name</label>
+      <input
+        id="nickname"
+        type="text"
+        [value]="nickname()"
+        (input)="nickname.set($any($event.target).value)"
+        placeholder="Enter nickname (2-15 chars)"
+        maxlength="15"
+        autocomplete="off"
+      />
+    </div>
+
+    @if (errorMsg()) {
+      <div class="error-msg">⚠️ {{ errorMsg() }}</div>
+    }
+
+    <button
+      class="btn btn-primary"
+      (click)="createRoom()"
+      [disabled]="isLoading()"
+    >
+      @if (isLoading()) {
+        <span class="spinner"></span>
+      } @else {
+        🏰 Create Room
+      }
+    </button>
+
+    <div class="divider">
+      <span>OR</span>
+    </div>
+
+    <div class="join-section">
+      <div class="input-group">
+        <label for="roomCode">Room Code</label>
+        <input
+          id="roomCode"
+          type="text"
+          [value]="roomCode()"
+          (input)="roomCode.set($any($event.target).value)"
+          placeholder="e.g. ABCD"
+          maxlength="4"
+          class="room-code-input"
+          autocomplete="off"
+        />
+      </div>
+      <button
+        class="btn btn-secondary"
+        (click)="joinRoom()"
+        [disabled]="isLoading()"
+      >
+        ⚔️ Join Battle
+      </button>
+    </div>
+  </div>
+
+  <div class="footer-particles">
+    <span class="particle">✦</span>
+    <span class="particle">✧</span>
+    <span class="particle">⚡</span>
+    <span class="particle">✦</span>
+    <span class="particle">✧</span>
+  </div>
+</div>

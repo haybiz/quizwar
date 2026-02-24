@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #0f1428;
+    --card-bg: rgba(15, 20, 40, 0.85);
+    --accent-red: #e63946;
+    --accent-red-dark: #c1121f;
+    --accent-gold: #ffd700;
+    --accent-gold-dark: #e6ac00;
+    --accent-teal: #4ecdc4;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b8c8;
+    --border-color: rgba(255, 215, 0, 0.15);
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Animated background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse at 20% 20%, rgba(230, 57, 70, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(255, 215, 0, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(78, 205, 196, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+    animation: bgShift 20s ease-in-out infinite alternate;
+}
+
+body>* {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes bgShift {
+    0% {
+        background:
+            radial-gradient(ellipse at 20% 20%, rgba(230, 57, 70, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 80%, rgba(255, 215, 0, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 50%, rgba(78, 205, 196, 0.04) 0%, transparent 50%);
+    }
+
+    100% {
+        background:
+            radial-gradient(ellipse at 80% 30%, rgba(230, 57, 70, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 20% 70%, rgba(255, 215, 0, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 60% 40%, rgba(78, 205, 196, 0.04) 0%, transparent 50%);
+    }
+}
+
+a {
+    color: var(--accent-gold);
+    text-decoration: none;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 215, 0, 0.35);
+}
+
+::selection {
+    background: rgba(230, 57, 70, 0.3);
+    color: #fff;
+}

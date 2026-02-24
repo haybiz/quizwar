@@ -1,0 +1,94 @@
+<div class="results-container">
+    <div class="header">
+        <h1 class="title">⚔️ Battle Complete! ⚔️</h1>
+        <p class="subtitle">Final Results</p>
+    </div>
+
+    <!-- Podium -->
+    <div class="podium-section">
+        @if (podium(); as pod) {
+        <div class="podium">
+            <!-- 2nd Place -->
+            <div class="podium-spot second">
+                @if (pod.second) {
+                <div class="podium-player">
+                    <span class="podium-medal">🥈</span>
+                    <span class="podium-name">{{ pod.second.nickname }}</span>
+                    <span class="podium-score">{{ pod.second.score }} pts</span>
+                </div>
+                <div class="podium-bar" [style.height]="getPodiumHeight(2)">
+                    <span class="podium-rank">2</span>
+                </div>
+                }
+            </div>
+
+            <!-- 1st Place -->
+            <div class="podium-spot first">
+                @if (pod.first) {
+                <div class="podium-player champion">
+                    <span class="crown">👑</span>
+                    <span class="podium-medal">🥇</span>
+                    <span class="podium-name">{{ pod.first.nickname }}</span>
+                    <span class="podium-score">{{ pod.first.score }} pts</span>
+                </div>
+                <div class="podium-bar gold" [style.height]="getPodiumHeight(1)">
+                    <span class="podium-rank">1</span>
+                </div>
+                }
+            </div>
+
+            <!-- 3rd Place -->
+            <div class="podium-spot third">
+                @if (pod.third) {
+                <div class="podium-player">
+                    <span class="podium-medal">🥉</span>
+                    <span class="podium-name">{{ pod.third.nickname }}</span>
+                    <span class="podium-score">{{ pod.third.score }} pts</span>
+                </div>
+                <div class="podium-bar" [style.height]="getPodiumHeight(3)">
+                    <span class="podium-rank">3</span>
+                </div>
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Full Leaderboard -->
+    <div class="leaderboard-section">
+        <h2 class="section-title">🏆 Full Leaderboard</h2>
+        <div class="leaderboard">
+            @for (player of players(); track player.id; let i = $index) {
+            <div class="leaderboard-row" [class.is-you]="player.id === currentPlayerId()" [class.top-three]="i < 3">
+                <span class="lb-rank">
+                    @if (i < 3) { {{ getMedal(i) }} } @else { {{ i + 1 }} } </span>
+                        <span class="lb-name">
+                            {{ player.nickname }}
+                            @if (player.id === currentPlayerId()) {
+                            <span class="you-tag">(You)</span>
+                            }
+                        </span>
+                        <span class="lb-score">{{ player.score }} pts</span>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+        @if (isHost()) {
+        <button class="btn btn-primary" (click)="playAgain()" [disabled]="isResetting()">
+            @if (isResetting()) {
+            <span class="spinner"></span> Resetting...
+            } @else {
+            🔄 Play Again
+            }
+        </button>
+        } @else {
+        <div class="waiting-msg">Waiting for host to start a new game...</div>
+        }
+        <button class="btn btn-leave" (click)="leaveRoom()">
+            🚪 Leave Room
+        </button>
+    </div>
+</div>

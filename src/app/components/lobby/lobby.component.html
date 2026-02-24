@@ -1,0 +1,62 @@
+<div class="lobby-container">
+    <div class="header">
+        <h1 class="title">⚔️ Quiz<span class="accent">War</span> ⚔️</h1>
+        <p class="subtitle">Waiting Room</p>
+    </div>
+
+    <div class="room-code-section">
+        <p class="label">Share this code with friends:</p>
+        <div class="code-display" (click)="copyCode()">
+            <span class="code">{{ roomId() }}</span>
+            <span class="copy-hint">
+                @if (copied()) {
+                ✅ Copied!
+                } @else {
+                📋 Click to copy
+                }
+            </span>
+        </div>
+    </div>
+
+    <div class="players-section">
+        <h2 class="section-title">
+            <span class="shield">🛡️</span>
+            Warriors ({{ playerCount() }})
+        </h2>
+
+        <div class="players-list">
+            @for (player of players(); track player.id) {
+            <div class="player-card" [class.is-host]="player.id === room()?.hostId">
+                <div class="player-avatar">
+                    {{ player.nickname.charAt(0).toUpperCase() }}
+                </div>
+                <span class="player-name">{{ player.nickname }}</span>
+                @if (player.id === room()?.hostId) {
+                <span class="host-badge">👑 Host</span>
+                }
+                @if (player.id === getPlayerId()) {
+                <span class="you-badge">You</span>
+                }
+            </div>
+            }
+        </div>
+    </div>
+
+    @if (errorMsg()) {
+    <div class="error-msg">⚠️ {{ errorMsg() }}</div>
+    }
+
+    <div class="actions">
+        @if (isHost()) {
+        <button class="btn btn-start" [disabled]="!canStart() || isStarting()" (click)="startGame()">
+            @if (isStarting()) {
+            <span class="spinner"></span> Loading Questions...
+            } @else if (playerCount() < 2) { ⏳ Need at least 2 players } @else { 🚀 Start Battle! } </button>
+                } @else {
+                <div class="waiting-msg">
+                    <div class="waiting-spinner"></div>
+                    <p>Waiting for host to start the battle...</p>
+                </div>
+                }
+    </div>
+</div>

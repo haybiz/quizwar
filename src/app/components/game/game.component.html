@@ -1,0 +1,96 @@
+<div class="game-container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="question-counter">
+            <span class="counter-num">{{ currentQuestionNum() }}</span>
+            <span class="counter-sep">/</span>
+            <span class="counter-total">{{ totalQuestions() }}</span>
+        </div>
+        <div class="timer" [class]="getTimerClass()">
+            <span class="timer-icon">⏱️</span>
+            <span class="timer-value">{{ timeRemaining() }}</span>
+        </div>
+    </div>
+
+    <!-- Timer Bar -->
+    <div class="timer-bar-wrapper">
+        <div class="timer-bar" [class]="getTimerClass()" [style.width.%]="getTimerWidth()"></div>
+    </div>
+
+    <div class="game-layout">
+        <!-- Main Game Area -->
+        <div class="main-area">
+            @if (currentQuestion(); as q) {
+            <div class="question-card">
+                <p class="question-text">{{ q.question }}</p>
+            </div>
+
+            <div class="answers-grid">
+                @for (answer of q.answers; track $index) {
+                <button class="answer-btn {{ getAnswerClass(answer) }}"
+                    [disabled]="hasAnswered() || timeRemaining() <= 0" (click)="selectAnswer(answer)">
+                    <span class="answer-label">{{ getAnswerLabel($index) }}</span>
+                    <span class="answer-text">{{ answer }}</span>
+                </button>
+                }
+            </div>
+
+            @if (hasAnswered() && !showingResults()) {
+            <div class="feedback locked-in">
+                🔒 Answer locked in! Waiting for timer...
+            </div>
+            }
+
+            @if (showingResults()) {
+            <div class="feedback results-shown">
+                @if (currentPlayerData()?.isCorrect) {
+                ✅ Correct!
+                @if (isFastest(currentPlayerId())) {
+                <span class="fastest-badge">⚡ Fastest!</span>
+                }
+                } @else if (selectedAnswer()) {
+                ❌ Wrong answer
+                } @else {
+                ⏰ Time's up!
+                }
+                <span class="next-hint">Next question coming up...</span>
+            </div>
+            }
+            } @else {
+            <div class="loading-question">
+                <div class="spinner-lg"></div>
+                <p>Loading question...</p>
+            </div>
+            }
+        </div>
+
+        <!-- Scoreboard Sidebar -->
+        <div class="scoreboard">
+            <h3 class="scoreboard-title">🏆 Scoreboard</h3>
+            <div class="scores-list">
+                @for (player of players(); track player.id; let i = $index) {
+                <div class="score-row" [class.is-you]="player.id === currentPlayerId()">
+                    <span class="rank">{{ i + 1 }}</span>
+                    <div class="score-player-info">
+                        <span class="score-name">
+                            {{ player.nickname }}
+                            @if (player.id === currentPlayerId()) {
+                            <span class="you-tag">(You)</span>
+                            }
+                        </span>
+                        @if (showingResults() && isFastest(player.id)) {
+                        <span class="fast-icon">⚡</span>
+                        }
+                    </div>
+                    <span class="score-value">{{ player.score }}</span>
+                    @if (showingResults() && player.isCorrect !== null) {
+                    <span class="answer-indicator" [class.correct]="player.isCorrect" [class.wrong]="!player.isCorrect">
+                        {{ player.isCorrect ? '✓' : '✗' }}
+                    </span>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
