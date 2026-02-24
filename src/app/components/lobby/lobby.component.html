@@ -42,6 +42,44 @@
         </div>
     </div>
 
+    <!-- Game Settings (Host Only) -->
+    @if (isHost()) {
+    <div class="settings-section">
+        <h2 class="section-title">⚙️ Game Settings</h2>
+
+        <!-- Question Count -->
+        <div class="setting-group">
+            <label class="setting-label">Number of Questions</label>
+            <div class="question-count-row">
+                @for (count of [10, 15, 20, 25, 30, 50]; track count) {
+                <button class="count-btn" [class.active]="questionCount() === count" (click)="setQuestionCount(count)">
+                    {{ count }}
+                </button>
+                }
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="setting-group">
+            <label class="setting-label">
+                Categories
+                <span class="setting-hint">
+                    ({{ selectedCategoryIds().length }}/4 selected · leave empty for all)
+                </span>
+            </label>
+            <div class="categories-grid">
+                @for (cat of categories(); track cat.id) {
+                <button class="category-chip" [class.active]="isCategorySelected(cat.id)"
+                    [disabled]="!isCategorySelected(cat.id) && selectedCategoryIds().length >= 4"
+                    (click)="toggleCategory(cat.id)">
+                    {{ getShortCategoryName(cat.name) }}
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+    }
+
     @if (errorMsg()) {
     <div class="error-msg">⚠️ {{ errorMsg() }}</div>
     }

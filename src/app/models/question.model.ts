@@ -17,3 +17,8 @@ export interface TriviaApiQuestion {
     correct_answer: string;
     incorrect_answers: string[];
 }
+
+export interface TriviaCategory {
+    id: number;
+    name: string;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, DestroyRef, signal, computed, inject, effect } from '@angular/core';
+import { Component, OnInit, DestroyRef, signal, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { AuthService } from '../../services/auth.service';
@@ -73,15 +73,12 @@ export class GameComponent implements OnInit {
         const id = this.route.snapshot.paramMap.get('roomId') || '';
         this.roomId.set(id);
 
-        // If we don't have a room listener yet, start one
         if (!this.room()) {
             this.gameService.listenToRoom(id);
         }
 
-        // Start the timer
         this.startTimer();
 
-        // Watch for question changes to reset state
         let lastQuestionIndex = -1;
 
         const checkInterval = setInterval(() => {
@@ -106,6 +103,11 @@ export class GameComponent implements OnInit {
             if (myData && myData.selectedAnswer && !this.hasAnswered()) {
                 this.selectedAnswer.set(myData.selectedAnswer);
                 this.hasAnswered.set(true);
+            }
+
+            // End timer early when all players answered
+            if (this.allPlayersAnswered() && !this.showingResults()) {
+                this.onTimerEnd();
             }
         }, 200);
 
@@ -140,6 +142,7 @@ export class GameComponent implements OnInit {
     }
 
     private onTimerEnd(): void {
+        if (this.showingResults()) return; // Already ended
         clearInterval(this.timerInterval);
         this.timerInterval = null;
         this.showingResults.set(true);
@@ -178,11 +181,13 @@ export class GameComponent implements OnInit {
         const q = this.currentQuestion();
         if (!q) return '';
 
-        if (this.showingResults() || this.hasAnswered()) {
+        // Only reveal correct/wrong AFTER showingResults (timer ended or all answered)
+        if (this.showingResults()) {
             if (answer === q.correct_answer) return 'correct';
             if (answer === this.selectedAnswer() && answer !== q.correct_answer) return 'wrong';
         }
 
+        // Before results: just show "selected" highlight (no green/red)
         if (answer === this.selectedAnswer()) return 'selected';
         return '';
     }

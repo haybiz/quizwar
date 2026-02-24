@@ -67,8 +67,12 @@ export class GameService {
         this.listeners.push(unsub1);
     }
 
-    async startGame(roomId: string): Promise<void> {
-        const questions = await this.triviaService.fetchQuestions();
+    async startGame(roomId: string, categoryIds: number[], questionCount: number): Promise<void> {
+        const questions = await this.triviaService.fetchQuestions(categoryIds, questionCount);
+
+        if (questions.length === 0) {
+            throw new Error('No questions available for selected categories');
+        }
 
         const roomQuestions: RoomQuestion[] = questions.map(q => ({
             question: q.question,
