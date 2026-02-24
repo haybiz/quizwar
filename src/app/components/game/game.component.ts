@@ -67,7 +67,11 @@ export class GameComponent implements OnInit {
         const p = this.gameService.players();
         const entries = Object.values(p);
         if (entries.length === 0) return false;
-        return entries.every(player => typeof player.selectedAnswer === 'string' && player.selectedAnswer !== 'NONE');
+        return entries.every(player =>
+            typeof player.selectedAnswer === 'string' &&
+            player.selectedAnswer !== 'NONE' &&
+            player.selectedAnswer.length > 0
+        );
     });
 
     ngOnInit(): void {
@@ -110,8 +114,9 @@ export class GameComponent implements OnInit {
 
             // Sync answer state from Firebase
             const myData = this.currentPlayerData();
-            if (myData && myData.selectedAnswer !== 'NONE' && !this.hasAnswered()) {
-                this.selectedAnswer.set(myData.selectedAnswer);
+            const ans = myData?.selectedAnswer;
+            if (ans && typeof ans === 'string' && ans !== 'NONE' && ans.length > 0 && !this.hasAnswered()) {
+                this.selectedAnswer.set(ans);
                 this.hasAnswered.set(true);
             }
 
