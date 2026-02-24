@@ -23,6 +23,7 @@ export class GameComponent implements OnInit {
     timeRemaining = signal(15);
     countdownRemaining = signal(0);
     showingResults = signal(false);
+    private activeQuestionIndex = -1;
     private timerInterval: any = null;
     private autoAdvanceTimeout: any = null;
 
@@ -84,8 +85,6 @@ export class GameComponent implements OnInit {
 
         this.startTimer();
 
-        let lastQuestionIndex = -1;
-
         const checkInterval = setInterval(() => {
             const room = this.room();
             if (!room) return;
@@ -98,8 +97,8 @@ export class GameComponent implements OnInit {
             }
 
             // Question changed
-            if (room.currentQuestionIndex !== lastQuestionIndex) {
-                lastQuestionIndex = room.currentQuestionIndex;
+            if (room.currentQuestionIndex !== this.activeQuestionIndex) {
+                this.activeQuestionIndex = room.currentQuestionIndex;
                 this.resetForNewQuestion();
             }
 
@@ -194,7 +193,13 @@ export class GameComponent implements OnInit {
 
     getAnswerClass(answer: string): string {
         const q = this.currentQuestion();
-        if (!q) return '';
+        const room = this.room();
+        if (!q || !room) return '';
+
+        // Prevent UI flash when question changes before interval catches it
+        if (room.currentQuestionIndex !== this.activeQuestionIndex) {
+            return '';
+        }
 
         // Only reveal correct/wrong AFTER showingResults (timer ended or all answered)
         if (this.showingResults()) {
