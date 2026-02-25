@@ -10,31 +10,31 @@
 
   <div class="card">
     <div class="input-group">
+      <label>Choose your Avatar</label>
+      <div class="avatar-grid">
+        @for (avatar of availableAvatars; track avatar) {
+        <button class="avatar-btn" [class.selected]="selectedAvatar() === avatar" (click)="selectAvatar(avatar)">
+          {{ avatar }}
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="input-group">
       <label for="nickname">Your Battle Name</label>
-      <input
-        id="nickname"
-        type="text"
-        [value]="nickname()"
-        (input)="nickname.set($any($event.target).value)"
-        placeholder="Enter nickname (2-15 chars)"
-        maxlength="15"
-        autocomplete="off"
-      />
+      <input id="nickname" type="text" [value]="nickname()" (input)="nickname.set($any($event.target).value)"
+        placeholder="Enter nickname (2-15 chars)" maxlength="15" autocomplete="off" />
     </div>
 
     @if (errorMsg()) {
-      <div class="error-msg">⚠️ {{ errorMsg() }}</div>
+    <div class="error-msg">⚠️ {{ errorMsg() }}</div>
     }
 
-    <button
-      class="btn btn-primary"
-      (click)="createRoom()"
-      [disabled]="isLoading()"
-    >
+    <button class="btn btn-primary" (click)="createRoom()" [disabled]="isLoading()">
       @if (isLoading()) {
-        <span class="spinner"></span>
+      <span class="spinner"></span>
       } @else {
-        🏰 Create Room
+      🏰 Create Room
       }
     </button>
 
@@ -45,22 +45,10 @@
     <div class="join-section">
       <div class="input-group">
         <label for="roomCode">Room Code</label>
-        <input
-          id="roomCode"
-          type="text"
-          [value]="roomCode()"
-          (input)="roomCode.set($any($event.target).value)"
-          placeholder="e.g. ABCD"
-          maxlength="4"
-          class="room-code-input"
-          autocomplete="off"
-        />
+        <input id="roomCode" type="text" [value]="roomCode()" (input)="roomCode.set($any($event.target).value)"
+          placeholder="e.g. ABCD" maxlength="4" class="room-code-input" autocomplete="off" />
       </div>
-      <button
-        class="btn btn-secondary"
-        (click)="joinRoom()"
-        [disabled]="isLoading()"
-      >
+      <button class="btn btn-secondary" (click)="joinRoom()" [disabled]="isLoading()">
         ⚔️ Join Battle
       </button>
     </div>

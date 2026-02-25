@@ -13,10 +13,13 @@ export class TriviaService {
         return data.trivia_categories as TriviaCategory[];
     }
 
-    async fetchQuestions(categoryIds: number[], amount: number): Promise<Question[]> {
+    async fetchQuestions(categoryIds: number[], amount: number, difficulty: string = 'any'): Promise<Question[]> {
+        const fetchDiff = difficulty === 'escalating' ? 'any' : difficulty;
+
         // If multiple categories, split amount evenly and fetch per category
         if (categoryIds.length === 0) {
-            return this.fetchFromApi(amount);
+            const qs = await this.fetchFromApi(amount, undefined, fetchDiff);
+            return this.finalizeQuestions(qs, amount, difficulty);
         }
 
         const perCategory = Math.ceil(amount / categoryIds.length);
@@ -27,19 +30,34 @@ export class TriviaService {
                 // OpenTDB limits to 1 request per 5 seconds
                 await new Promise(resolve => setTimeout(resolve, 5200));
             }
-            const batch = await this.fetchFromApi(perCategory, categoryIds[i]);
+            const batch = await this.fetchFromApi(perCategory, categoryIds[i], fetchDiff);
             allQuestions.push(...batch);
         }
 
-        // Shuffle and trim to exact amount
-        this.shuffleArray(allQuestions as any[]);
-        return allQuestions.slice(0, amount);
+        return this.finalizeQuestions(allQuestions, amount, difficulty);
     }
 
-    private async fetchFromApi(amount: number, categoryId?: number): Promise<Question[]> {
+    private finalizeQuestions(questions: Question[], amount: number, difficulty: string): Question[] {
+        if (difficulty === 'escalating') {
+            const order: { [key: string]: number } = { easy: 1, medium: 2, hard: 3 };
+            questions.sort((a, b) => {
+                const valA = order[a.difficulty] || 2;
+                const valB = order[b.difficulty] || 2;
+                return valA - valB;
+            });
+        } else {
+            this.shuffleArray(questions as any[]);
+        }
+        return questions.slice(0, amount);
+    }
+
+    private async fetchFromApi(amount: number, categoryId?: number, difficulty?: string): Promise<Question[]> {
         let url = `${this.API_URL}?amount=${amount}&type=multiple`;
         if (categoryId) {
             url += `&category=${categoryId}`;
+        }
+        if (difficulty && difficulty !== 'any') {
+            url += `&difficulty=${difficulty}`;
         }
 
         const response = await fetch(url);
@@ -48,7 +66,7 @@ export class TriviaService {
         if (data.response_code !== 0) {
             // If not enough questions, try with fewer
             if (data.response_code === 1 && amount > 5) {
-                return this.fetchFromApi(Math.min(amount, 10), categoryId);
+                return this.fetchFromApi(Math.min(amount, 10), categoryId, difficulty);
             }
             return [];
         }
@@ -60,6 +78,7 @@ export class TriviaService {
 
             return {
                 category: this.decodeHtml(q.category),
+                difficulty: q.difficulty,
                 question: this.decodeHtml(q.question),
                 correct_answer: this.decodeHtml(q.correct_answer),
                 answers: allAnswers

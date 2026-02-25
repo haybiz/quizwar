@@ -16,21 +16,47 @@
     margin-bottom: 0.25rem;
 }
 
-.question-counter {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
-    color: var(--text-secondary, #b0b8c8);
+.player-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
-.counter-num {
+.score-pill {
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.4);
     color: var(--accent-gold, #ffd700);
-    font-size: 1.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
     font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    display: inline-block;
 }
 
-.counter-sep {
-    margin: 0 0.3rem;
-    color: rgba(255, 255, 255, 0.3);
+.streak-pill {
+    background: linear-gradient(135deg, #ff4c00, #ff0000);
+    color: #fff;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
+    animation: pulse 1.5s infinite;
+}
+
+.streak-badge {
+    background: linear-gradient(135deg, #ff4c00, #ff0000);
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .timer {
@@ -512,5 +538,160 @@
 
     .scores-list {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 0.5rem;
+    }
+
+    .question-card,
+    .feedback {
+        padding: 1.5rem;
+    }
+
+    .question-text {
+        font-size: 1.1rem;
+    }
+
+    .answer-btn {
+        padding: 0.8rem;
+    }
+
+    .answer-label {
+        width: 24px;
+        height: 24px;
+        font-size: 0.9rem;
+    }
+
+    .emote-dock {
+        bottom: 0.5rem;
+        padding: 0.2rem 0.3rem;
+        border-radius: 12px;
+        gap: 0.15rem;
+    }
+
+    .emote-btn {
+        font-size: 1.3rem;
+        padding: 0.25rem;
+    }
+}
+
+/* Emotes Overlay */
+.emotes-overlay {
+    position: fixed;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    height: 400px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.floating-emote {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    animation: floatUp 2.8s ease-in forwards;
+    transform: translateX(-50%);
+}
+
+.emote-bubble {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    animation: wiggle 1s ease-in-out infinite;
+}
+
+.emote-avatar {
+    font-size: 1.4rem;
+    background: rgba(15, 20, 40, 0.9);
+    border: 2px solid var(--accent-gold, #ffd700);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.emote-dock {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 20, 40, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 0.4rem 0.75rem;
+    display: flex;
+    gap: 0.4rem;
+    z-index: 101;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.emote-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 0.35rem;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.emote-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.25);
+}
+
+.emote-btn:active {
+    transform: scale(0.95);
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(50px) translateX(-50%) scale(0.5);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateY(0) translateX(-50%) scale(1.1);
+    }
+
+    20% {
+        transform: translateY(-30px) translateX(-50%) scale(1);
+    }
+
+    80% {
+        opacity: 0.8;
+        transform: translateY(-300px) translateX(-50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-400px) translateX(-50%) scale(0.8);
+    }
+}
+
+@keyframes wiggle {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-15deg);
+    }
+
+    75% {
+        transform: rotate(15deg);
     }
 }

@@ -67,8 +67,8 @@ export class GameService {
         this.listeners.push(unsub1);
     }
 
-    async startGame(roomId: string, categoryIds: number[], questionCount: number): Promise<void> {
-        const questions = await this.triviaService.fetchQuestions(categoryIds, questionCount);
+    async startGame(roomId: string, categoryIds: number[], questionCount: number, difficulty: string): Promise<void> {
+        const questions = await this.triviaService.fetchQuestions(categoryIds, questionCount, difficulty);
 
         if (questions.length === 0) {
             throw new Error('No questions available for selected categories');
@@ -76,6 +76,7 @@ export class GameService {
 
         const roomQuestions: RoomQuestion[] = questions.map(q => ({
             category: q.category,
+            difficulty: q.difficulty || 'unknown',
             question: q.question,
             correct_answer: q.correct_answer,
             answers: q.answers
@@ -89,6 +90,10 @@ export class GameService {
             playerUpdates[`rooms/${roomId}/players/${pid}/answeredAt`] = 0;
             playerUpdates[`rooms/${roomId}/players/${pid}/selectedAnswer`] = 'NONE';
             playerUpdates[`rooms/${roomId}/players/${pid}/isCorrect`] = 'NONE';
+            playerUpdates[`rooms/${roomId}/players/${pid}/streak`] = 0;
+            playerUpdates[`rooms/${roomId}/players/${pid}/correctAnswersCount`] = 0;
+            playerUpdates[`rooms/${roomId}/players/${pid}/totalResponseTime`] = 0;
+            playerUpdates[`rooms/${roomId}/players/${pid}/activeEmote`] = null;
         }
 
         await update(ref(this.db), {
@@ -131,17 +136,50 @@ export class GameService {
         const timeTaken = (now - startedAt) / 1000; // seconds
         const timeBonus = Math.max(0, Math.floor((15 - timeTaken) * 0.67)); // bonus for speed
 
-        // Get current score
+        // Get current stats
         const currentPlayer = this.players()[playerId];
         const currentScore = currentPlayer?.score || 0;
-        const scoreAdd = isCorrect ? 10 + timeBonus : 0;
+        let streak = currentPlayer?.streak || 0;
+        let correctAnswersCount = currentPlayer?.correctAnswersCount || 0;
+        let totalResponseTime = currentPlayer?.totalResponseTime || 0;
+
+        let scoreAdd = 0;
+        if (isCorrect) {
+            streak++;
+            correctAnswersCount++;
+            totalResponseTime += timeTaken;
+            const multiplier = streak >= 3 ? 1.5 : 1.0;
+            scoreAdd = Math.floor((10 + timeBonus) * multiplier);
+        } else {
+            streak = 0;
+            totalResponseTime += timeTaken;
+        }
 
         await update(ref(this.db, `rooms/${roomId}/players/${playerId}`), {
             selectedAnswer: answer,
             answeredAt: now,
             isCorrect: isCorrect,
-            score: currentScore + scoreAdd
+            score: currentScore + scoreAdd,
+            streak,
+            correctAnswersCount,
+            totalResponseTime
         });
+    }
+
+    async sendEmote(roomId: string, emote: string): Promise<void> {
+        const playerId = this.authService.userId;
+        if (!playerId) return;
+
+        await update(ref(this.db, `rooms/${roomId}/players/${playerId}`), {
+            activeEmote: emote
+        });
+
+        // Auto clear after 3 seconds
+        setTimeout(() => {
+            update(ref(this.db, `rooms/${roomId}/players/${playerId}`), {
+                activeEmote: null
+            });
+        }, 3000);
     }
 
     async advanceQuestion(roomId: string): Promise<void> {

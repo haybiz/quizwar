@@ -1,5 +1,6 @@
 import { Component, OnInit, DestroyRef, signal, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../../services/game.service';
 import { AuthService } from '../../services/auth.service';
@@ -9,7 +10,7 @@ import { TriviaCategory } from '../../models/question.model';
 @Component({
     selector: 'app-lobby',
     standalone: true,
-    imports: [FormsModule],
+    imports: [FormsModule, TitleCasePipe],
     templateUrl: './lobby.component.html',
     styleUrl: './lobby.component.css'
 })
@@ -30,6 +31,8 @@ export class LobbyComponent implements OnInit {
     categories = signal<TriviaCategory[]>([]);
     selectedCategoryIds = signal<number[]>([]);
     questionCount = signal(10);
+    difficulty = signal('any');
+    availableDifficulties = ['any', 'easy', 'medium', 'hard', 'escalating'];
 
     isHost = this.gameService.isHost;
     players = this.gameService.sortedPlayers;
@@ -86,6 +89,10 @@ export class LobbyComponent implements OnInit {
         this.questionCount.set(Math.max(10, Math.min(50, count)));
     }
 
+    setDifficulty(diff: string): void {
+        this.difficulty.set(diff);
+    }
+
     getShortCategoryName(name: string): string {
         return name.replace('Entertainment: ', '').replace('Science: ', '');
     }
@@ -98,7 +105,8 @@ export class LobbyComponent implements OnInit {
             await this.gameService.startGame(
                 this.roomId(),
                 this.selectedCategoryIds(),
-                this.questionCount()
+                this.questionCount(),
+                this.difficulty()
             );
         } catch (e: any) {
             this.errorMsg.set(e?.message || 'Failed to start game. Please try again.');

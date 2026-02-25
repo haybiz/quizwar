@@ -19,7 +19,7 @@ export class RoomService {
         return code;
     }
 
-    async createRoom(nickname: string): Promise<string> {
+    async createRoom(nickname: string, avatar: string): Promise<string> {
         const playerId = await this.authService.ensureAuth();
         let roomId = this.generateRoomCode();
 
@@ -35,7 +35,12 @@ export class RoomService {
             score: 0,
             answeredAt: 0,
             selectedAnswer: 'NONE',
-            isCorrect: 'NONE'
+            isCorrect: 'NONE',
+            avatar,
+            streak: 0,
+            correctAnswersCount: 0,
+            totalResponseTime: 0,
+            activeEmote: null
         };
 
         await set(ref(this.db, `rooms/${roomId}`), {
@@ -50,10 +55,11 @@ export class RoomService {
         });
 
         sessionStorage.setItem('quizwar_nickname', nickname);
+        sessionStorage.setItem('quizwar_avatar', avatar);
         return roomId;
     }
 
-    async joinRoom(roomId: string, nickname: string): Promise<boolean> {
+    async joinRoom(roomId: string, nickname: string, avatar: string): Promise<boolean> {
         const playerId = await this.authService.ensureAuth();
         const roomRef = ref(this.db, `rooms/${roomId}`);
         const snapshot = await get(roomRef);
@@ -72,7 +78,12 @@ export class RoomService {
             score: 0,
             answeredAt: 0,
             selectedAnswer: 'NONE',
-            isCorrect: 'NONE'
+            isCorrect: 'NONE',
+            avatar,
+            streak: 0,
+            correctAnswersCount: 0,
+            totalResponseTime: 0,
+            activeEmote: null
         };
 
         await update(ref(this.db, `rooms/${roomId}/players`), {
@@ -80,6 +91,7 @@ export class RoomService {
         });
 
         sessionStorage.setItem('quizwar_nickname', nickname);
+        sessionStorage.setItem('quizwar_avatar', avatar);
         return true;
     }
 

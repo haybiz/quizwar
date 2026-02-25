@@ -347,6 +347,39 @@
     box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
 }
 
+.difficulty-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.diff-btn {
+    padding: 0.5rem 1.2rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary, #b0b8c8);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-transform: capitalize;
+}
+
+.diff-btn:hover {
+    border-color: var(--accent-red, #e63946);
+    color: #fff;
+}
+
+.diff-btn.active {
+    border-color: var(--accent-red, #e63946);
+    background: rgba(230, 57, 70, 0.12);
+    color: var(--accent-red, #e63946);
+    box-shadow: 0 0 12px rgba(230, 57, 70, 0.2);
+}
+
 .categories-grid {
     display: flex;
     flex-wrap: wrap;

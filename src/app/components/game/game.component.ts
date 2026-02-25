@@ -2,6 +2,7 @@ import { Component, OnInit, DestroyRef, signal, computed, inject } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { AuthService } from '../../services/auth.service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
     selector: 'app-game',
@@ -15,6 +16,7 @@ export class GameComponent implements OnInit {
     private router = inject(Router);
     private gameService = inject(GameService);
     private authService = inject(AuthService);
+    private audioService = inject(AudioService);
     private destroyRef = inject(DestroyRef);
 
     roomId = signal('');
@@ -26,6 +28,8 @@ export class GameComponent implements OnInit {
     private activeQuestionIndex = -1;
     private timerInterval: any = null;
     private autoAdvanceTimeout: any = null;
+
+    availableEmotes = ['😂', '😱', '😭', '🚀', '🔥', '👀', '💡', '🎉'];
 
     room = this.gameService.room;
     currentQuestion = this.gameService.currentQuestion;
@@ -147,6 +151,13 @@ export class GameComponent implements OnInit {
 
             const elapsed = (Date.now() - startedAt) / 1000;
             const remaining = Math.max(0, Math.ceil(15 - elapsed));
+
+            if (this.timeRemaining() !== remaining) {
+                if (remaining <= 3 && remaining > 0 && !this.showingResults()) {
+                    this.audioService.playTick();
+                }
+            }
+
             this.timeRemaining.set(remaining);
 
             if (remaining <= 0) {
@@ -160,6 +171,15 @@ export class GameComponent implements OnInit {
         clearInterval(this.timerInterval);
         this.timerInterval = null;
         this.showingResults.set(true);
+
+        const myData = this.currentPlayerData();
+        if (myData?.isCorrect === true) {
+            this.audioService.playCorrect();
+        } else if (myData?.selectedAnswer && myData.selectedAnswer !== 'NONE') {
+            this.audioService.playWrong();
+        } else {
+            this.audioService.playTimeout();
+        }
 
         // Host auto-advances after 3 seconds
         if (this.isHost()) {
@@ -226,5 +246,25 @@ export class GameComponent implements OnInit {
     isFastest(playerId: string): boolean {
         const f = this.fastestCorrectPlayer();
         return f ? f.id === playerId : false;
+    }
+
+    playersArray = computed(() => {
+        const p = this.gameService.players();
+        return Object.entries(p).map(([id, player]) => ({ id, ...player }));
+    });
+
+    sendEmote(emote: string): void {
+        const roomId = this.roomId();
+        if (roomId) {
+            this.gameService.sendEmote(roomId, emote);
+        }
+    }
+
+    getEmotePosition(playerId: string): number {
+        const players = this.playersArray();
+        const index = players.findIndex(p => p.id === playerId);
+        const total = Math.max(1, players.length);
+        const sectionWidth = 80 / total; // Use middle 80% of screen
+        return 10 + (index * sectionWidth) + (sectionWidth / 2);
     }
 }

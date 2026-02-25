@@ -2,6 +2,7 @@ import { Component, OnInit, DestroyRef, signal, computed, inject } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { AuthService } from '../../services/auth.service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
     selector: 'app-results',
@@ -15,6 +16,7 @@ export class ResultsComponent implements OnInit {
     private router = inject(Router);
     private gameService = inject(GameService);
     private authService = inject(AuthService);
+    private audioService = inject(AudioService);
     private destroyRef = inject(DestroyRef);
 
     roomId = signal('');
@@ -35,6 +37,46 @@ export class ResultsComponent implements OnInit {
         };
     });
 
+    superlatives = computed(() => {
+        const players = this.players();
+        if (players.length === 0) return [];
+
+        const result = [];
+
+        // Fastest Finger (lowest average time per correct answer, min 1 correct)
+        const eligibleFastest = players.filter(p => (p.correctAnswersCount || 0) > 0);
+        if (eligibleFastest.length > 0) {
+            const sortedBySpeed = [...eligibleFastest].sort((a, b) => {
+                const avgA = (a.totalResponseTime || 999) / (a.correctAnswersCount || 1);
+                const avgB = (b.totalResponseTime || 999) / (b.correctAnswersCount || 1);
+                return avgA - avgB;
+            });
+            const best = sortedBySpeed[0];
+            const avgTime = ((best.totalResponseTime || 0) / (best.correctAnswersCount || 1)).toFixed(1);
+            result.push({ title: '⚡ Fastest Finger', player: best.nickname, detail: `Avg ${avgTime}s` });
+        }
+
+        // On Fire! (highest streak >= 3)
+        const eligibleStreak = players.filter(p => (p.streak || 0) >= 3);
+        if (eligibleStreak.length > 0) {
+            const sortedByStreak = [...eligibleStreak].sort((a, b) => (b.streak || 0) - (a.streak || 0));
+            const best = sortedByStreak[0];
+            result.push({ title: '🔥 On Fire!', player: best.nickname, detail: `Streak of ${best.streak}` });
+        }
+
+        // Sharp Shooter (highest accuracy, min 1 correct)
+        const room = this.room();
+        const totalQ = room?.questions?.length || 10;
+        if (eligibleFastest.length > 0) {
+            const sortedByAccuracy = [...eligibleFastest].sort((a, b) => (b.correctAnswersCount || 0) - (a.correctAnswersCount || 0));
+            const best = sortedByAccuracy[0];
+            const acc = Math.round(((best.correctAnswersCount || 0) / totalQ) * 100);
+            result.push({ title: '🎯 Sharp Shooter', player: best.nickname, detail: `${acc}% Accuracy` });
+        }
+
+        return result;
+    });
+
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('roomId') || '';
         this.roomId.set(id);
@@ -42,6 +84,8 @@ export class ResultsComponent implements OnInit {
         if (!this.room()) {
             this.gameService.listenToRoom(id);
         }
+
+        this.audioService.playFanfare();
 
         // Watch for status change to lobby (Play Again)
         const checkInterval = setInterval(() => {

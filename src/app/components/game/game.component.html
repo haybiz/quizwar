@@ -1,10 +1,11 @@
 <div class="game-container">
     <!-- Top Bar -->
     <div class="top-bar">
-        <div class="question-counter">
-            <span class="counter-num">{{ currentQuestionNum() }}</span>
-            <span class="counter-sep">/</span>
-            <span class="counter-total">{{ totalQuestions() }}</span>
+        <div class="player-stats">
+            <span class="score-pill">🏅 {{ currentPlayerData().score || 0 }} pts</span>
+            @if ((currentPlayerData().streak || 0) >= 3) {
+            <span class="streak-pill">🔥 x{{ currentPlayerData().streak }} Streak (1.5x)</span>
+            }
         </div>
         <div class="timer" [class]="getTimerClass()">
             <span class="timer-icon">⏱️</span>
@@ -65,6 +66,9 @@
                 @if (isFastest(currentPlayerId())) {
                 <span class="fastest-badge">⚡ Fastest!</span>
                 }
+                @if ((currentPlayerData().streak || 0) >= 3) {
+                <span class="streak-badge">🔥 Streak x{{ currentPlayerData().streak }}!</span>
+                }
                 } @else if (selectedAnswer()) {
                 ❌ Wrong answer
                 } @else {
@@ -80,6 +84,24 @@
             </div>
             }
         </div>
+    </div>
 
+    <!-- Live Emotes Overlay -->
+    <div class="emotes-overlay">
+        @for (player of playersArray(); track player.id) {
+        @if (player.activeEmote) {
+        <div class="floating-emote" [style.left.%]="getEmotePosition(player.id)">
+            <span class="emote-bubble">{{ player.activeEmote }}</span>
+            <span class="emote-avatar">{{ player.avatar || '😎' }}</span>
+        </div>
+        }
+        }
+    </div>
+
+    <!-- Player Emote Bar -->
+    <div class="emote-dock">
+        @for (emote of availableEmotes; track emote) {
+        <button class="emote-btn" (click)="sendEmote(emote)">{{ emote }}</button>
+        }
     </div>
 </div>

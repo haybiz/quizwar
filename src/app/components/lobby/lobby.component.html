@@ -28,7 +28,7 @@
             @for (player of players(); track player.id) {
             <div class="player-card" [class.is-host]="player.id === room()?.hostId">
                 <div class="player-avatar">
-                    {{ player.nickname.charAt(0).toUpperCase() }}
+                    {{ player.avatar || '😎' }}
                 </div>
                 <span class="player-name">{{ player.nickname }}</span>
                 @if (player.id === room()?.hostId) {
@@ -54,6 +54,18 @@
                 @for (count of [10, 15, 20, 25, 30, 50]; track count) {
                 <button class="count-btn" [class.active]="questionCount() === count" (click)="setQuestionCount(count)">
                     {{ count }}
+                </button>
+                }
+            </div>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="setting-group">
+            <label class="setting-label">Difficulty</label>
+            <div class="difficulty-row">
+                @for (d of availableDifficulties; track d) {
+                <button class="diff-btn" [class.active]="difficulty() === d" (click)="setDifficulty(d)">
+                    {{ d | titlecase }}
                 </button>
                 }
             </div>

@@ -54,6 +54,22 @@
         }
     </div>
 
+    <!-- Superlatives Section -->
+    @if (superlatives().length > 0) {
+    <div class="superlatives-section">
+        <h2 class="section-title">🌟 Superlatives 🌟</h2>
+        <div class="superlatives-grid">
+            @for (sup of superlatives(); track sup.title) {
+            <div class="superlative-card">
+                <span class="sup-title">{{ sup.title }}</span>
+                <span class="sup-player">{{ sup.player }}</span>
+                <span class="sup-detail">{{ sup.detail }}</span>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
     <!-- Full Leaderboard -->
     <div class="leaderboard-section">
         <h2 class="section-title">🏆 Full Leaderboard</h2>

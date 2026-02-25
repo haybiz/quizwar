@@ -4,6 +4,11 @@ export interface Player {
     answeredAt: number;
     selectedAnswer: string;
     isCorrect: boolean | string;
+    avatar: string;
+    streak: number;
+    correctAnswersCount: number;
+    totalResponseTime: number;
+    activeEmote: string | null;
 }
 
 export interface Room {
@@ -18,6 +23,7 @@ export interface Room {
 
 export interface RoomQuestion {
     category: string;
+    difficulty: string;
     question: string;
     correct_answer: string;
     answers: string[];

@@ -16,12 +16,24 @@ export class HomeComponent {
     errorMsg = signal('');
     isLoading = signal(false);
 
+    availableAvatars = ['😎', '🤖', '🧙‍♂️', '🥷', '👽', '👻', '🦄', '🦖', '🤠', '🦊', '🐯', '🦁'];
+    selectedAvatar = signal(this.availableAvatars[0]);
+
     constructor(
         private roomService: RoomService,
         private router: Router
     ) {
         const saved = sessionStorage.getItem('quizwar_nickname');
         if (saved) this.nickname.set(saved);
+
+        const savedAvatar = sessionStorage.getItem('quizwar_avatar');
+        if (savedAvatar && this.availableAvatars.includes(savedAvatar)) {
+            this.selectedAvatar.set(savedAvatar);
+        }
+    }
+
+    selectAvatar(emoji: string): void {
+        this.selectedAvatar.set(emoji);
     }
 
     get isNicknameValid(): boolean {
@@ -37,7 +49,7 @@ export class HomeComponent {
         this.isLoading.set(true);
         this.errorMsg.set('');
         try {
-            const roomId = await this.roomService.createRoom(this.nickname().trim());
+            const roomId = await this.roomService.createRoom(this.nickname().trim(), this.selectedAvatar());
             this.router.navigate(['/lobby', roomId]);
         } catch (e) {
             this.errorMsg.set('Failed to create room. Check your Firebase config.');
@@ -58,7 +70,7 @@ export class HomeComponent {
         this.isLoading.set(true);
         this.errorMsg.set('');
         try {
-            const joined = await this.roomService.joinRoom(code, this.nickname().trim());
+            const joined = await this.roomService.joinRoom(code, this.nickname().trim(), this.selectedAvatar());
             if (joined) {
                 this.router.navigate(['/lobby', code]);
             } else {
